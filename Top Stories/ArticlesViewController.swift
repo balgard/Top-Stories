@@ -77,7 +77,7 @@ class ArticlesViewController: UITableViewController
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let article = articles[indexPath.row]
-        cell.textLabel?.text = article["name"]
+        cell.textLabel?.text = article["title"]
         cell.detailTextLabel?.text = article["description"]
         return cell
     }
