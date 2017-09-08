@@ -80,6 +80,9 @@ class SourcesViewController: UITableViewController
         cell.detailTextLabel?.text = source["description"]
         return cell
     }
+    @IBAction func doneButtonTapped(_ sender: UIBarButtonItem) {
+        exit(0)
+    }
     
 }
 

@@ -82,6 +82,12 @@ class ArticlesViewController: UITableViewController
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        let url = URL(string: articles[indexPath.row]["url"]!)
+        UIApplication.shared.open(url! as URL, options: [:], completionHandler: nil)
+    }
+    
 }
 
 
