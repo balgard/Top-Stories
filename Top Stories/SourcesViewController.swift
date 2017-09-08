@@ -19,39 +19,51 @@ class SourcesViewController: UITableViewController
         super.viewDidLoad()
         self.title = "News Sources"
         let query = "https://newsapi.org/v1/sources?language=en&country=us&apiKey=\(apiKey)"
-        if let url = URL(string: query)
-        {
-            if let data = try? Data(contentsOf:url)
+        DispatchQueue.global(qos: .userInitiated).async
             {
-                let json = try! JSON(data:data)
-                if json["status"] == "ok"
+                [unowned self] in
+                if let url = URL(string: query)
                 {
-                    parse(json:json)
-                    return
+                    if let data = try? Data(contentsOf:url)
+                    {
+                        let json = try! JSON(data:data)
+                        if json["status"] == "ok"
+                        {
+                            self.parse(json:json)
+                            return
+                        }
+                    }
                 }
-            }
+                self.loadError()
         }
-        loadError()
     }
     
     func parse(json: JSON)
     {
-       for result in json["sources"].arrayValue
-       {
-        let id = result["id"].stringValue
-        let name = result["name"].stringValue
-        let description = result["description"].stringValue
-        let source = ["id" : id, "name" : name, "description" : description]
-        sources.append(source)
+        for result in json["sources"].arrayValue
+        {
+            let id = result["id"].stringValue
+            let name = result["name"].stringValue
+            let description = result["description"].stringValue
+            let source = ["id" : id, "name" : name, "description" : description]
+            sources.append(source)
         }
-        tableView.reloadData()
+        DispatchQueue.main.async
+            {
+                [unowned self] in
+                self.tableView.reloadData()
+        }
     }
     
     func loadError()
     {
-        let alert = UIAlertController(title: "Loading Error", message: "There was a problem loading the news feed", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
+        DispatchQueue.main.async
+        {
+            [unowned self] in
+            let alert = UIAlertController(title: "Loading Error", message: "There was a problem loading the news feed", preferredStyle: .actionSheet)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     
